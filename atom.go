@@ -67,20 +67,20 @@ type AtomLink struct {
 }
 
 type AtomFeed struct {
-	XMLName     xml.Name `xml:"feed"`
-	Xmlns       string   `xml:"xmlns,attr"`
-	Title       string   `xml:"title"`   // required
-	Id          string   `xml:"id"`      // required
-	Updated     string   `xml:"updated"` // required
-	Category    string   `xml:"category,omitempty"`
-	Icon        string   `xml:"icon,omitempty"`
-	Logo        string   `xml:"logo,omitempty"`
-	Rights      string   `xml:"rights,omitempty"` // copyright used
-	Subtitle    string   `xml:"subtitle,omitempty"`
-	Link        *AtomLink
-	Author      *AtomAuthor `xml:"author,omitempty"`
-	Contributor *AtomContributor
-	Entries     []*AtomEntry
+	XMLName     xml.Name           `xml:"feed"`
+	Xmlns       string             `xml:"xmlns,attr"`
+	Title       string             `xml:"title"`   // required
+	Id          string             `xml:"id"`      // required
+	Updated     string             `xml:"updated"` // required
+	Category    string             `xml:"category,omitempty"`
+	Icon        string             `xml:"icon,omitempty"`
+	Logo        string             `xml:"logo,omitempty"`
+	Rights      string             `xml:"rights,omitempty"` // copyright used
+	Subtitle    string             `xml:"subtitle,omitempty"`
+	Link        []*AtomLink        `xml:"link,omitempty`
+	Author      *AtomAuthor        `xml:"author,omitempty"`
+	Contributor []*AtomContributor `xml:"contributor,omitempty"`
+	Entries     []*AtomEntry       `xml:"entry,omitempty"`
 }
 
 type Atom struct {
@@ -134,10 +134,11 @@ func newAtomEntry(i *Item) *AtomEntry {
 // create a new AtomFeed with a generic Feed struct's data
 func (a *Atom) AtomFeed() *AtomFeed {
 	updated := anyTimeFormat(time.RFC3339, a.Updated, a.Created)
+	link := []*AtomLink{&AtomLink{Href: a.Link.Href, Rel: a.Link.Rel}}
 	feed := &AtomFeed{
 		Xmlns:    ns,
 		Title:    a.Title,
-		Link:     &AtomLink{Href: a.Link.Href, Rel: a.Link.Rel},
+		Link:     link,
 		Subtitle: a.Description,
 		Id:       a.Link.Href,
 		Updated:  updated,
